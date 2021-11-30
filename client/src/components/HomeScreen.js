@@ -11,6 +11,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import GroupIcon from '@mui/icons-material/Group';
 import PersonIcon from '@mui/icons-material/Person';
 import FunctionsIcon from '@mui/icons-material/Functions';
+import { useState } from 'react';
 
 
 /*
@@ -21,6 +22,7 @@ import FunctionsIcon from '@mui/icons-material/Functions';
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
+    const [text, setText] = useState("1");
 
     useEffect(() => {
         store.loadIdNamePairs(auth.email);
@@ -30,6 +32,27 @@ const HomeScreen = () => {
         store.createNewList();
     }
 
+    function funct1(){
+        store.viewMode = 1;
+        setText("1");
+        console.log(store)
+    }
+    function funct2(){
+        store.viewMode = 2;
+        setText("2");
+        console.log(store)
+    }
+    function funct3(){
+        store.viewMode = 3;
+        setText("3");
+        console.log(store)
+    }
+    function funct4(){
+        store.viewMode = 4;
+        setText("4");
+        console.log(store)
+    }
+    
     let listCard = "";
     if (store) {
         listCard = 
@@ -47,10 +70,10 @@ const HomeScreen = () => {
     }
     return (
         <div id="top5-list-selector">
-            <Button><HomeIcon/></Button>
-            <Button><GroupIcon/></Button>
-            <Button><PersonIcon/></Button>
-            <Button><FunctionsIcon/></Button>
+            <Button onClick = {funct1}><HomeIcon/></Button>
+            <Button onClick = {funct2}><GroupIcon/></Button>
+            <Button onClick = {funct3}><PersonIcon/></Button>
+            <Button onClick = {funct4}><FunctionsIcon/></Button>
             <TextField label = "Search" style = {{width : "40%"}}></TextField>
             <div id="list-selector-list">
                 {
@@ -67,7 +90,7 @@ const HomeScreen = () => {
             >
                 <AddIcon />
             </Fab>
-                <Typography variant="h2" marginTop = "-7%">Add List</Typography>
+                <Typography variant="h2" marginTop = "-7%">{text}</Typography>
             </div>
             <DeleteModal/>
         </div>);
