@@ -86,11 +86,11 @@ const HomeScreen = () => {
                 aria-label="add"
                 id="add-list-button"
                 onClick={handleCreateNewList}
-                style = {{marginTop : "-7%"}}
+                style = {{marginTop : "17%" ,zIndex: "999"}}
             >
                 <AddIcon />
             </Fab>
-                <Typography variant="h2" marginTop = "-7%">{text}</Typography>
+                <Typography variant="h2" marginTop = "17%" zIndex = "999">{text}</Typography>
             </div>
             <DeleteModal/>
         </div>);

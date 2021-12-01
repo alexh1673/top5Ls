@@ -22,25 +22,28 @@ function CommentBox(props) {
             comment.push(text)
             props.idNamePair.comments.push(comment)
             store.updateListPairs(props.idNamePair._id)
+            event.target.blur()
         }
     }
 
     if(props.idNamePair){
         editItems = 
-            <List sx={{ width: '75%',height : "225px", bgcolor: 'white', overflowY:"auto" }}>
+            <List sx={{ width: '99%',height : "225px", bgcolor: 'white', overflowY:"auto"}}>
                 {
                     props.idNamePair.comments.map((item) => (
                         <Box style = {{fontSize: '12pt',
                         width: '100%',
                         height: '45px',
-                        back: 'black'}}>
+                        back: 'black',
+                        fontWeight:"bold"}}>
                             {item[0]}
                             <Box style={{
                                 fontSize: '10pt',
                                 width: '100%',
                                 height: '35px',
                                 back: 'black',
-                                bgcolor: 'yellow'
+                                bgcolor: 'yellow',
+                                fontWeight:"normal"
                             }}>
                                 {item[1]}
                             </Box>
@@ -54,7 +57,7 @@ function CommentBox(props) {
         <div id="top5-CommentBox">
             {editItems}
             <input placeholder = "Add Comment" 
-            style = {{width : "75%",height: "60px"}} 
+            style = {{width : "100%",height: "52px"}} 
             type = "text"
             onKeyDown = {addComment}
             />

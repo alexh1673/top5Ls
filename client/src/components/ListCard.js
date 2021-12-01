@@ -1,15 +1,16 @@
 import { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
-import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
 import IconButton from '@mui/material/IconButton';
-import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DropBox from './DropBox';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import AuthContext from '../auth';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -20,10 +21,11 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 */
 function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
-    const [editActive, setEditActive] = useState(false);
-    const [text, setText] = useState("");
     const { idNamePair } = props;
     const [dropped, setdropActive] = useState(false);
+    const {auth} = useContext(AuthContext);
+    const [liked, setLike] = useState(idNamePair.likedBy.includes(auth.user.email)?true:false);
+    const [disliked, setDislike] = useState(idNamePair.dislikedBy.includes(auth.user.email)?true:false);
 
     function handleLoadList(event, id) {
         if (!event.target.disabled) {
@@ -32,33 +34,9 @@ function ListCard(props) {
         }
     }
 
-    function handleToggleEdit(event) {
-        event.stopPropagation();
-        toggleEdit();
-    }
-
-    function toggleEdit() {
-        let newActive = !editActive;
-        if (newActive) {
-            store.setIsListNameEditActive();
-        }
-        setEditActive(newActive);
-    }
-
     async function handleDeleteList(event, id) {
         event.stopPropagation();
         store.markListForDeletion(id);
-    }
-
-    function handleKeyPress(event) {
-        if (event.code === "Enter") {
-            let id = event.target.id.substring("list-".length);
-            store.changeListName(id, text);
-            toggleEdit();
-        }
-    }
-    function handleUpdateText(event) {
-        setText(event.target.value);
     }
 
     async function open(event){
@@ -66,6 +44,50 @@ function ListCard(props) {
         let newDrop = !dropped;
         setdropActive(newDrop)
     }
+
+    function like(event)
+    {
+        event.stopPropagation();
+        if(!liked)
+        {
+            idNamePair.likes +=1;
+            idNamePair.likedBy.push(auth.user.email);
+            store.updateListPairs(idNamePair._id);
+        }
+        else
+        {
+            idNamePair.likes -=1;
+            const index = idNamePair.likedBy.indexOf(auth.user.email);
+                if (index > -1) {
+                idNamePair.likedBy.splice(index, 1);
+                }
+            store.updateListPairs(idNamePair._id);
+        }
+        setLike(!liked);
+    }
+
+    function dislike(event)
+    {
+        event.stopPropagation();
+        if(!disliked)
+        {
+            idNamePair.dislikes +=1;
+            idNamePair.dislikedBy.push(auth.user.email);
+            store.updateListPairs(idNamePair._id);
+        }
+        else
+        {
+            idNamePair.dislikes -=1;
+            const index = idNamePair.dislikedBy.indexOf(auth.user.email);
+                if (index > -1) {
+                idNamePair.dislikedBy.splice(index, 1);
+                }
+            store.updateListPairs(idNamePair._id);
+        }
+        setDislike(!disliked);
+    }
+
+
 
     let cardElement =
         <ListItem
@@ -83,6 +105,18 @@ function ListCard(props) {
             }}
         >
                 <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
+                <Box>
+                    <Button onClick = {like} style  = {liked?{opacity:1}:{opacity:0.3}}>
+                        <ThumbUpIcon/>
+                    </Button>
+                    <Box fontSize = "12px" textAlign = "center">{idNamePair.likes}</Box>
+                </Box>
+                <Box>
+                    <Button onClick = {dislike} style  = {disliked?{opacity:1}:{opacity:0.3}}>
+                        <ThumbDownIcon/>
+                    </Button>
+                    <Box fontSize = "12px" textAlign = "center">{idNamePair.dislikes}</Box>
+                </Box>
                 <Box sx={{ p: 1 }}>
                     <IconButton onClick={(event) => {
                         handleDeleteList(event, idNamePair._id)
@@ -93,7 +127,6 @@ function ListCard(props) {
                 <Box>
                     {dropped?<Button onClick = {(event) => open(event)}><ArrowDropUpIcon/></Button>:<Button onClick = {(event) => open(event)}><ArrowDropDownIcon/></Button>}
                 </Box>
-                
         </ListItem>
         
     return (

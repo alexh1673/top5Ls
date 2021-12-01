@@ -229,7 +229,12 @@ function GlobalStoreContextProvider(props) {
         let payload = {
             name: newListName,
             items: ["?", "?", "?", "?", "?"],
-            ownerEmail: auth.user.email
+            ownerEmail: auth.user.email,
+            likes:0,
+            dislikes:0,
+            published:false,
+            likedBy:[],
+            dislikedBy:[]
         };
         const response = await api.createTop5List(payload);
         if (response.data.success) {
@@ -395,6 +400,7 @@ function GlobalStoreContextProvider(props) {
                 type:GlobalStoreActionType.UPDATE_COMMENTS
            })
         }
+        console.log(this.idNamePairs)
     }
 
     store.undo = function () {
