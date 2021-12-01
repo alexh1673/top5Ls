@@ -41,6 +41,11 @@ function ListCard(props) {
 
     async function open(event){
         event.stopPropagation();
+        console.log(idNamePair)
+        if(!dropped){
+            idNamePair.views +=1;
+            store.updateListPairs(idNamePair._id);
+        }
         let newDrop = !dropped;
         setdropActive(newDrop)
     }
@@ -87,36 +92,46 @@ function ListCard(props) {
         setDislike(!disliked);
     }
 
+    let likeComponent = 
+            <Box>
+                <Box>
+                <Button onClick = {like} style  = {liked?{opacity:1}:{opacity:0.3}}>
+                        <ThumbUpIcon/>
+                </Button>
+                    <Box fontSize = "12px" textAlign = "center">{idNamePair.likes}</Box>
+                </Box>
+            </Box>
 
+    let dislikeComponent = 
+            <Box>
+                 <Box>
+                    <Button onClick = {dislike} style  = {disliked?{opacity:1}:{opacity:0.3}}>
+                        <ThumbDownIcon/>
+                    </Button>
+                    <Box fontSize = "12px" textAlign = "center">{idNamePair.dislikes}</Box>
+                </Box>
+            </Box>
 
     let cardElement =
         <ListItem
             id={idNamePair._id}
             key={idNamePair._id}
             sx={{ marginTop: '15px', display: 'flex', p: 1 }}
-            button
-            onClick={(event) => {
-                handleLoadList(event, idNamePair._id)
-            }
-            }
             style={{
                 fontSize: '48pt',
                 width: '100%'
             }}
         >
-                <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
-                <Box>
-                    <Button onClick = {like} style  = {liked?{opacity:1}:{opacity:0.3}}>
-                        <ThumbUpIcon/>
-                    </Button>
-                    <Box fontSize = "12px" textAlign = "center">{idNamePair.likes}</Box>
+
+                <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}
+                    <Box fontSize = "15px">By: {idNamePair.ownedBy}</Box>
                 </Box>
-                <Box>
-                    <Button onClick = {dislike} style  = {disliked?{opacity:1}:{opacity:0.3}}>
-                        <ThumbDownIcon/>
-                    </Button>
-                    <Box fontSize = "12px" textAlign = "center">{idNamePair.dislikes}</Box>
-                </Box>
+                <Box fontSize = "15px">views {idNamePair.views}</Box>
+                <Button   onClick={(event) => {handleLoadList(event, idNamePair._id)}} fontSize = "15px" >
+                        edit
+                </Button>
+                {(idNamePair.published && store.viewMode != "1")?likeComponent:<Box></Box>}
+                {idNamePair.published?dislikeComponent:<Box></Box>}
                 <Box sx={{ p: 1 }}>
                     <IconButton onClick={(event) => {
                         handleDeleteList(event, idNamePair._id)

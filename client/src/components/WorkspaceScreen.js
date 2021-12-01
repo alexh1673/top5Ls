@@ -28,7 +28,6 @@ function WorkspaceScreen() {
         event.stopPropagation();
         if(event.code == "Enter")
         {
-            console.log("rass")
             store.changeListName(store.currentList._id,text);
             event.target.blur()
         }

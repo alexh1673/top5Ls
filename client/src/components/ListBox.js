@@ -8,11 +8,11 @@ import { Box } from '@mui/system';
 
 function ListBox(props) {
     const {store} = useContext(GlobalStoreContext);
-    console.log(props.idNamePair)
+    let counter = 1;
     let editItems = "";
     if(props.idNamePair){
         editItems = 
-            <List sx={{ width: '100%',height : "275px", bgcolor: 'navy' }}>
+            <List sx={{ width: '100%',height : "275px", bgcolor: 'white' }}>
                 {
                     props.idNamePair.items.map((item) => (
                         <Box style={{
@@ -20,7 +20,7 @@ function ListBox(props) {
                             width: '100%',
                             height: '55px'
                         }}>
-                            {item}
+                           {counter++} . {item}
                         </Box>
                     ))
                 }
