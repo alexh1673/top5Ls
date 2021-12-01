@@ -27,6 +27,7 @@ function ListCard(props) {
     const [liked, setLike] = useState(idNamePair.likedBy.includes(auth.user.email)?true:false);
     const [disliked, setDislike] = useState(idNamePair.dislikedBy.includes(auth.user.email)?true:false);
 
+
     function handleLoadList(event, id) {
         if (!event.target.disabled) {
             // CHANGE THE CURRENT LIST
@@ -130,8 +131,8 @@ function ListCard(props) {
                 <Button   onClick={(event) => {handleLoadList(event, idNamePair._id)}} fontSize = "15px" >
                         edit
                 </Button>
-                {(idNamePair.published && store.viewMode != "1")?likeComponent:<Box></Box>}
-                {idNamePair.published?dislikeComponent:<Box></Box>}
+                {(!idNamePair.published && (props.viewMode !== "1"))?likeComponent:<Box></Box>}
+                {(!idNamePair.published && (props.viewMode !== "1"))?dislikeComponent:<Box></Box>}
                 <Box sx={{ p: 1 }}>
                     <IconButton onClick={(event) => {
                         handleDeleteList(event, idNamePair._id)

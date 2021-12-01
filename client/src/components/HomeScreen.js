@@ -12,6 +12,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import PersonIcon from '@mui/icons-material/Person';
 import FunctionsIcon from '@mui/icons-material/Functions';
 import { useState } from 'react';
+import { MenuList } from '@mui/material';
 
 
 /*
@@ -63,6 +64,7 @@ const HomeScreen = () => {
                         key={pair._id}
                         idNamePair={pair}
                         selected={false}
+                        viewMode={text}
                     />
                 ))
             }
@@ -75,6 +77,7 @@ const HomeScreen = () => {
             <Button onClick = {funct3}><PersonIcon/></Button>
             <Button onClick = {funct4}><FunctionsIcon/></Button>
             <TextField label = "Search" style = {{width : "40%"}}></TextField>
+            <MenuList>rhee</MenuList>
             <div id="list-selector-list">
                 {
                     listCard
