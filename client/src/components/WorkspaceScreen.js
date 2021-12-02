@@ -23,6 +23,23 @@ function WorkspaceScreen() {
         setText(e.target.value)
     }
 
+    function handlePublish(event)
+    {
+        event.stopPropagation();
+        console.log(store.currentList);
+        let list;
+        for(let i = 0;i<store.idNamePairs.length;i++)
+        {
+            if(store.idNamePairs[i]._id == store.currentList._id){
+                list = store.idNamePairs[i];
+                break;
+            }
+        }
+        list.published = true;
+        store.updateListPairs(store.currentList._id);
+        store.closeCurrentList();
+    }
+
     function keyPress(event)
     {
         event.stopPropagation();
@@ -62,7 +79,7 @@ function WorkspaceScreen() {
                 {editItems}
             </div>
             <div><Button style={{marginTop: "45%",zIndex:"999",backgroundColor:"black"}}>save</Button>
-                <Button style={{marginTop: "45%",zIndex:"999",backgroundColor:"black"}}>publish</Button>
+                <Button style={{marginTop: "45%",zIndex:"999",backgroundColor:"black"}} onClick = {handlePublish}>publish</Button>
             </div>
         </div>
     )

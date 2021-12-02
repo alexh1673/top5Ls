@@ -42,7 +42,6 @@ function ListCard(props) {
 
     async function open(event){
         event.stopPropagation();
-        console.log(idNamePair)
         if(!dropped){
             idNamePair.views +=1;
             store.updateListPairs(idNamePair._id);
@@ -53,6 +52,7 @@ function ListCard(props) {
 
     function like(event)
     {
+        console.log(idNamePair)
         event.stopPropagation();
         if(!liked)
         {
@@ -123,16 +123,15 @@ function ListCard(props) {
                 width: '100%'
             }}
         >
-
                 <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}
                     <Box fontSize = "15px">By: {idNamePair.ownedBy}</Box>
                 </Box>
                 <Box fontSize = "15px">views {idNamePair.views}</Box>
-                <Button   onClick={(event) => {handleLoadList(event, idNamePair._id)}} fontSize = "15px" >
+                {(idNamePair.published && (props.viewMode !== "1"))?likeComponent:<Box></Box>}
+                {(idNamePair.published && (props.viewMode !== "1"))?dislikeComponent:<Box></Box>}
+                {!idNamePair.published?<Button   onClick={(event) => {handleLoadList(event, idNamePair._id)}} fontSize = "15px" >
                         edit
-                </Button>
-                {(!idNamePair.published && (props.viewMode !== "1"))?likeComponent:<Box></Box>}
-                {(!idNamePair.published && (props.viewMode !== "1"))?dislikeComponent:<Box></Box>}
+                </Button>:<Box fontSize = "15px" >published on : {}</Box>}
                 <Box sx={{ p: 1 }}>
                     <IconButton onClick={(event) => {
                         handleDeleteList(event, idNamePair._id)

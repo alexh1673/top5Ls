@@ -228,7 +228,7 @@ function GlobalStoreContextProvider(props) {
         let newListName = "Untitled" + store.newListCounter;
         let payload = {
             name: newListName,
-            items: ["?", "?", "?", "?", "?"],
+            items: ["", "", "", "", ""],
             ownerEmail: auth.user.email,
             views:0,
             likes:0,
@@ -402,7 +402,6 @@ function GlobalStoreContextProvider(props) {
                 type:GlobalStoreActionType.UPDATE_COMMENTS
            })
         }
-        console.log(this.idNamePairs)
     }
 
     store.undo = function () {

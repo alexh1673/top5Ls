@@ -13,6 +13,10 @@ import PersonIcon from '@mui/icons-material/Person';
 import FunctionsIcon from '@mui/icons-material/Functions';
 import { useState } from 'react';
 import { MenuList } from '@mui/material';
+import { Box } from '@mui/system';
+import { IconButton } from '@mui/material';
+import { Menu, MenuItem } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 
 
 /*
@@ -24,6 +28,16 @@ const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
     const [text, setText] = useState("1");
+    const [anchorEl, setAnchorEl] = useState(null);
+    const isMenuOpen = Boolean(anchorEl);
+
+    const handleMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
 
     useEffect(() => {
         store.loadIdNamePairs(auth.email);
@@ -35,7 +49,7 @@ const HomeScreen = () => {
 
     function funct1(){
         store.viewMode = 1;
-        setText("1");
+        setText("Your Lists");
         console.log(store)
     }
     function funct2(){
@@ -45,15 +59,33 @@ const HomeScreen = () => {
     }
     function funct3(){
         store.viewMode = 3;
-        setText("3");
+        setText("Specified user's Lists");
         console.log(store)
     }
     function funct4(){
         store.viewMode = 4;
-        setText("4");
+        setText("Community Lists");
         console.log(store)
     }
     
+    let sortMenu = 
+        <Menu
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                }}
+                open={isMenuOpen}
+                onClose={handleMenuClose}
+            >
+                
+                <MenuItem>Logout</MenuItem>
+        </Menu>        
     let listCard = "";
     if (store) {
         listCard = 
@@ -77,7 +109,19 @@ const HomeScreen = () => {
             <Button onClick = {funct3}><PersonIcon/></Button>
             <Button onClick = {funct4}><FunctionsIcon/></Button>
             <TextField label = "Search" style = {{width : "40%"}}></TextField>
-            <MenuList>rhee</MenuList>
+            <Button>
+                Sort By
+                <MenuIcon
+                    size="large"
+                    edge="end"
+                    aria-label="account of current user"
+                    aria-haspopup="true"
+                    onClick={handleMenuOpen}
+                    color="inherit"
+                >
+                    {sortMenu}
+                </MenuIcon>
+            </Button>
             <div id="list-selector-list">
                 {
                     listCard
