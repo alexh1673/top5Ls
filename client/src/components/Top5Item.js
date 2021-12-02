@@ -14,7 +14,7 @@ import EditIcon from '@mui/icons-material/Edit';
 function Top5Item(props) {
     const { store } = useContext(GlobalStoreContext);
     const [editActive, setEditActive] = useState(false);
-    const [text, setText] = useState("");
+    const [text, setText] = useState(props.text);
     let { index } = props;
 
     let itemClass = "top5-item";
@@ -31,8 +31,8 @@ function Top5Item(props) {
         console.log(props.index)
         if (event.code === "Enter") {
             let index = props.index;
-            let text = event.target.value;
-            store.addUpdateItemTransaction(index, text);
+            setText(event.target.value);
+            //store.addUpdateItemTransaction(index, text);
             toggleEdit();
         }
     }
@@ -54,7 +54,7 @@ function Top5Item(props) {
             className='list-card'
             onKeyPress={handleKeyPress}
             onChange={handleUpdateText}
-            defaultValue={props.text}
+            defaultValue={text}
             inputProps={{style: {fontSize: 48}}}
             InputLabelProps={{style: {fontSize: 24}}}
             autoFocus
@@ -78,7 +78,7 @@ function Top5Item(props) {
                     <EditIcon style={{fontSize:'48pt'}}  onClick = {toggleEdit}/>
                 </IconButton>
             </Box>
-                <Box sx={{ p: 1, flexGrow: 1 }}>{props.text}</Box>
+                <Box sx={{ p: 1, flexGrow: 1 }}>{text}</Box>
             </ListItem>
     )
 }
