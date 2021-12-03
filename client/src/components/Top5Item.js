@@ -32,7 +32,7 @@ function Top5Item(props) {
         if (event.code === "Enter") {
             let index = props.index;
             setText(event.target.value);
-            //store.addUpdateItemTransaction(index, text);
+            store.currentList.items[index] = text;
             toggleEdit();
         }
     }

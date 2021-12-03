@@ -50,6 +50,12 @@ function WorkspaceScreen() {
         }
     }
 
+    function saveList(event)
+    {
+        event.stopPropagation()
+        store.updateCurrentList();
+    }
+
     let editItems = "";
     if (store.currentList) {
         editItems = 
@@ -78,7 +84,7 @@ function WorkspaceScreen() {
                 </div>
                 {editItems}
             </div>
-            <div><Button style={{marginTop: "45%",zIndex:"999",backgroundColor:"black"}}>save</Button>
+            <div><Button style={{marginTop: "45%",zIndex:"999",backgroundColor:"black"}} onClick = {saveList}>save</Button>
                 <Button style={{marginTop: "45%",zIndex:"999",backgroundColor:"black"}} onClick = {handlePublish}>publish</Button>
             </div>
         </div>
