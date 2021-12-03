@@ -4,9 +4,7 @@ import List from '@mui/material/List';
 import { Typography } from '@mui/material'
 import { GlobalStoreContext } from '../store/index.js'
 import { Box } from '@mui/system';
-import EditIcon from '@mui/icons-material/Edit';
-import IconButton from '@mui/material/IconButton';
-import { TextField } from '@mui/material';
+import { Date } from 'mongoose';
 import { Button } from '@mui/material';
 /*
     This React component lets us edit a loaded list, which only
@@ -56,6 +54,10 @@ function WorkspaceScreen() {
             }
         }
         list.published = true;
+        let today = new Date();
+        let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+        console.log(date)
+        list.publishDate = date;
         store.updateListPairs(store.currentList._id);
         store.closeCurrentList();
     }

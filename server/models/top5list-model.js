@@ -13,7 +13,8 @@ const Top5ListSchema = new Schema(
         published: {type: Boolean,required:true},
         likedBy: {type: [String],required:true},
         dislikedBy: {type: [String],required:true},
-        ownedBy: { type: String, required: true }
+        ownedBy: { type: String, required: true },
+        publishDate: { type: String, required: true }
     },
     { timestamps: true },
 )

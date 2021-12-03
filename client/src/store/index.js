@@ -243,7 +243,8 @@ function GlobalStoreContextProvider(props) {
             published:false,
             likedBy:[],
             dislikedBy:[],
-            ownedBy: auth.user.firstName+" " +auth.user.lastName
+            ownedBy: auth.user.firstName+" " +auth.user.lastName,
+            publishDate: new Date()
         };
         const response = await api.createTop5List(payload);
         if (response.data.success) {
@@ -361,7 +362,6 @@ function GlobalStoreContextProvider(props) {
                 type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                 payload: thePairs
             });
-            console.log(this.idNamePairs)
         }
         else {
             console.log("API FAILED TO GET THE LIST PAIRS");

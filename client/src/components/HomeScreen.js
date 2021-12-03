@@ -12,8 +12,8 @@ import GroupIcon from '@mui/icons-material/Group';
 import PersonIcon from '@mui/icons-material/Person';
 import FunctionsIcon from '@mui/icons-material/Functions';
 import { useState } from 'react';
-import { Menu, MenuItem } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import { borders, Box } from '@mui/system';
 
 
 /*
@@ -25,16 +25,7 @@ const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
     const [text, setText] = useState("Your Lists");
-    const [anchorEl, setAnchorEl] = useState(null);
-    const isMenuOpen = Boolean(anchorEl);
-
-    const handleMenuOpen = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-    };
+    const [menuOpen, setOpen] = useState(false);
 
     useEffect(() => {
         store.loadIdNamePairs(auth.email);
@@ -79,25 +70,44 @@ const HomeScreen = () => {
             }
         }
     }
+
+    function toggleOpen(){
+        console.log("hello ", menuOpen);
+        let temp = !menuOpen;
+        setOpen(temp);
+    }
+
+    function sortL(){
+        store.idNamePairs.sort((a,b) =>{
+            if(a.likes>b.likes)
+                return -1;
+            if(a.likes<b.likes)
+                return 1;
+            return 0;
+        })
+        toggleOpen();
+    }
+
+    function sortD(){
+        store.idNamePairs.sort((a,b) =>{
+            if(a.likes>b.likes)
+                return -1;
+            if(a.likes<b.likes)
+                return 1;
+            return 0;
+        })
+        toggleOpen();
+    }
     
     let sortMenu = 
-        <Menu
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}
-                open={isMenuOpen}
-                onClose={handleMenuClose}
-            >
-                
-                <MenuItem>Logout</MenuItem>
-        </Menu>        
+        <Box style = {{right:"0%",top:"14.5%", position:"absolute",backgroundColor:"white"}} border = {1} borderColor = "black" zIndex = "999">   
+                <Button>Publish Date(Newest)</Button>
+                <br/><Button>Publish Date(Oldest)</Button>
+                <br/><Button fullWidth>Views</Button>
+                <br/><Button fullWidth onClick = {sortL}>Likes</Button>
+                <br/><Button fullWidth onClick = {sortD}>Dislikes</Button>
+        </Box>        
+
     let listCard = "";
     if (store.idNamePairs) {
         listCard = 
@@ -121,19 +131,15 @@ const HomeScreen = () => {
             <Button onClick = {funct3}><PersonIcon/></Button>
             <Button onClick = {funct4}><FunctionsIcon/></Button>
             <TextField label = "Search" style = {{width : "40%"}} onKeyDown = {searchPress}></TextField>
-            <Button>
-                Sort By
-                <MenuIcon
-                    size="large"
-                    edge="end"
-                    aria-label="account of current user"
-                    aria-haspopup="true"
-                    onClick={handleMenuOpen}
-                    color="inherit"
-                >
-                    {sortMenu}
-                </MenuIcon>
-            </Button>
+                <Button style = {{right:"0%", position:"absolute"}} onClick = {toggleOpen} >
+                    Sort By
+                    <MenuIcon
+                        size="large"
+                        color="inherit"
+                    >
+                    </MenuIcon>
+                </Button>
+                {menuOpen?sortMenu:<Box></Box>}
             <div id="list-selector-list">
                 {
                     listCard
