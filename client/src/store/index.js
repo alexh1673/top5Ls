@@ -26,7 +26,8 @@ export const GlobalStoreActionType = {
     UNMARK_LIST_FOR_DELETION: "UNMARK_LIST_FOR_DELETION",
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_ITEM_EDIT_ACTIVE: "SET_ITEM_EDIT_ACTIVE",
-    UPDATE_COMMENTS : "UPDATE_COMMENTS"
+    UPDATE_COMMENTS : "UPDATE_COMMENTS",
+    CLEAR: "CLEAR"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -163,12 +164,12 @@ function GlobalStoreContextProvider(props) {
                 });
             }
             // START EDITING A LIST NAME
-            case GlobalStoreActionType.SET_LIST_NAME_EDIT_ACTIVE: {
+            case GlobalStoreActionType.CLEAR: {
                 return setStore({
-                    idNamePairs: store.idNamePairs,
-                    currentList: payload,
-                    newListCounter: store.newListCounter,
-                    isListNameEditActive: true,
+                    idNamePairs: null,
+                    currentList: null,
+                    newListCounter: 0,
+                    isListNameEditActive: false,
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     viewMode : store.viewMode
@@ -177,6 +178,12 @@ function GlobalStoreContextProvider(props) {
             default:
                 return store;
         }
+    }
+
+    store.clearHome = function (){
+        storeReducer({
+            type: GlobalStoreActionType.CLEAR
+        });
     }
 
     // THESE ARE THE FUNCTIONS THAT WILL UPDATE OUR STORE AND
@@ -256,7 +263,7 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
-    store.getAllLists = async function(){
+    store.getAllLists2 = async function(){
         const response = await api.getAllTop5Lists();
         if (response.data.success) {
             let pairsArray = response.data.data;
@@ -264,6 +271,7 @@ function GlobalStoreContextProvider(props) {
             {
                 if (!pairsArray[i].published) {
                     pairsArray.splice(i, 1);
+                    i-=1;
                 }
             }
 
@@ -278,6 +286,65 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
+    store.getAllLists3 = async function(user){
+        const response = await api.getAllTop5Lists();
+        if (response.data.success) {
+            let pairsArray = response.data.data;
+            for(let i = 0;i<pairsArray.length;i++)
+            {
+                if (!pairsArray[i].published) {
+                    pairsArray.splice(i, 1);
+                    i-=1;
+                }
+            }
+            for(let i = 0;i<pairsArray.length;i++)
+            {
+                if (pairsArray[i].ownedBy != user) {
+                    pairsArray.splice(i, 1);
+                    i-=1;
+                }
+            }
+
+            storeReducer({
+                type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                payload: pairsArray
+            });
+            console.log(this.idNamePairs)
+        }
+        else {
+            console.log("API FAILED TO GET ALL THE LIST PAIRS");
+        }
+    }
+
+    store.getAllLists4 = async function(name){
+        const response = await api.getAllTop5Lists();
+        if (response.data.success) {
+            let pairsArray = response.data.data;
+            for(let i = 0;i<pairsArray.length;i++)
+            {
+                if (!pairsArray[i].published) {
+                    pairsArray.splice(i, 1);
+                    i-=1;
+                }
+            }
+            for(let i = 0;i<pairsArray.length;i++)
+            {
+                if (!pairsArray[i].name.includes(name)) {
+                    pairsArray.splice(i, 1);
+                    i-=1;
+                }
+            }
+
+            storeReducer({
+                type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                payload: pairsArray
+            });
+            console.log(this.idNamePairs)
+        }
+        else {
+            console.log("API FAILED TO GET ALL THE LIST PAIRS");
+        }
+    }
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadIdNamePairs = async function () {
         const response = await api.getTop5ListPairs(auth.user.email);

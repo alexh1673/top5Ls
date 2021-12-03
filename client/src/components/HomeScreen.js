@@ -12,9 +12,6 @@ import GroupIcon from '@mui/icons-material/Group';
 import PersonIcon from '@mui/icons-material/Person';
 import FunctionsIcon from '@mui/icons-material/Functions';
 import { useState } from 'react';
-import { MenuList } from '@mui/material';
-import { Box } from '@mui/system';
-import { IconButton } from '@mui/material';
 import { Menu, MenuItem } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
@@ -56,18 +53,31 @@ const HomeScreen = () => {
     function funct2(){
         store.viewMode = 2;
         setText("All Lists");
-        store.getAllLists();
+        store.getAllLists2();
         console.log(store)
     }
     function funct3(){
         store.viewMode = 3;
-        setText("Specified user's Lists");
+        store.clearHome();
+        setText("Lists");
         console.log(store)
     }
     function funct4(){
         store.viewMode = 4;
         setText("Community Lists");
         console.log(store)
+    }
+
+    function searchPress(event){
+        if(event.code == "Enter"){
+            if(store.viewMode == "3"){
+                setText(event.target.value+"'s Lists")
+                store.getAllLists3(event.target.value);
+            }
+            if(store.viewMode == "4"){
+                store.getAllLists4(event.target.value);
+            }
+        }
     }
     
     let sortMenu = 
@@ -89,7 +99,7 @@ const HomeScreen = () => {
                 <MenuItem>Logout</MenuItem>
         </Menu>        
     let listCard = "";
-    if (store) {
+    if (store.idNamePairs) {
         listCard = 
             <List sx={{ marginTop:"5%", width: '90%', left: '5%', bgcolor: 'background.paper' }}>
             {
@@ -110,7 +120,7 @@ const HomeScreen = () => {
             <Button onClick = {funct2}><GroupIcon/></Button>
             <Button onClick = {funct3}><PersonIcon/></Button>
             <Button onClick = {funct4}><FunctionsIcon/></Button>
-            <TextField label = "Search" style = {{width : "40%"}}></TextField>
+            <TextField label = "Search" style = {{width : "40%"}} onKeyDown = {searchPress}></TextField>
             <Button>
                 Sort By
                 <MenuIcon
