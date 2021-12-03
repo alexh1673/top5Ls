@@ -127,8 +127,8 @@ function ListCard(props) {
                     <Box fontSize = "15px">By: {idNamePair.ownedBy}</Box>
                 </Box>
                 <Box fontSize = "15px">views {idNamePair.views}</Box>
-                {(idNamePair.published && (props.viewMode !== "1"))?likeComponent:<Box></Box>}
-                {(idNamePair.published && (props.viewMode !== "1"))?dislikeComponent:<Box></Box>}
+                {(idNamePair.published)?likeComponent:<Box></Box>}
+                {(idNamePair.published)?dislikeComponent:<Box></Box>}
                 {!idNamePair.published?<Button   onClick={(event) => {handleLoadList(event, idNamePair._id)}} fontSize = "15px" >
                         edit
                 </Button>:<Box fontSize = "15px" >published on : {}</Box>}

@@ -256,6 +256,28 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
+    store.getAllLists = async function(){
+        const response = await api.getAllTop5Lists();
+        if (response.data.success) {
+            let pairsArray = response.data.data;
+            for(let i = 0;i<pairsArray.length;i++)
+            {
+                if (!pairsArray[i].published) {
+                    pairsArray.splice(i, 1);
+                }
+            }
+
+            storeReducer({
+                type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                payload: pairsArray
+            });
+            console.log(this.idNamePairs)
+        }
+        else {
+            console.log("API FAILED TO GET ALL THE LIST PAIRS");
+        }
+    }
+
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadIdNamePairs = async function () {
         const response = await api.getTop5ListPairs(auth.user.email);

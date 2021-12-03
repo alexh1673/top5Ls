@@ -23,10 +23,30 @@ function WorkspaceScreen() {
         setText(e.target.value)
     }
 
-    function handlePublish(event)
+    function canPublish()
     {
-        event.stopPropagation();
-        console.log(store.currentList);
+            for(let i = 0;i<5;i++)
+            {
+                for(let j = (i+1);j<5;j++)
+                {
+                    if(store.currentList.items[i].toUpperCase() === store.currentList.items[j].toUpperCase())
+                    {
+                        return false;
+                    }
+                }
+            }
+            for(let j = 0;j<5;j++)
+            {
+                if(store.currentList.items[j].toUpperCase() == "")
+                {
+                    return false;
+                }
+            }
+        return true;
+    }
+
+    function doPublish()
+    {
         let list;
         for(let i = 0;i<store.idNamePairs.length;i++)
         {
@@ -45,7 +65,6 @@ function WorkspaceScreen() {
         event.stopPropagation();
         if(event.code == "Enter")
         {
-            store.changeListName(store.currentList._id,text);
             event.target.blur()
         }
     }
@@ -53,7 +72,9 @@ function WorkspaceScreen() {
     function saveList(event)
     {
         event.stopPropagation()
+        store.currentList.name = text;
         store.updateCurrentList();
+        store.closeCurrentList();
     }
 
     let editItems = "";
@@ -85,7 +106,8 @@ function WorkspaceScreen() {
                 {editItems}
             </div>
             <div><Button style={{marginTop: "45%",zIndex:"999",backgroundColor:"black"}} onClick = {saveList}>save</Button>
-                <Button style={{marginTop: "45%",zIndex:"999",backgroundColor:"black"}} onClick = {handlePublish}>publish</Button>
+               {canPublish()?<Button style={{marginTop: "45%",zIndex:"999",backgroundColor:"black"}} onClick = {doPublish}>publish</Button>:
+               <Button style={{marginTop: "45%",zIndex:"999",backgroundColor:"red"}}>publish</Button>}
             </div>
         </div>
     )

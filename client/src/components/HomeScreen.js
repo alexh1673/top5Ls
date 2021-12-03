@@ -27,7 +27,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
-    const [text, setText] = useState("1");
+    const [text, setText] = useState("Your Lists");
     const [anchorEl, setAnchorEl] = useState(null);
     const isMenuOpen = Boolean(anchorEl);
 
@@ -50,11 +50,13 @@ const HomeScreen = () => {
     function funct1(){
         store.viewMode = 1;
         setText("Your Lists");
+        store.loadIdNamePairs();
         console.log(store)
     }
     function funct2(){
         store.viewMode = 2;
-        setText("2");
+        setText("All Lists");
+        store.getAllLists();
         console.log(store)
     }
     function funct3(){
