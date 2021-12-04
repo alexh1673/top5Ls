@@ -244,7 +244,7 @@ function GlobalStoreContextProvider(props) {
             likedBy:[],
             dislikedBy:[],
             ownedBy: auth.user.firstName+" " +auth.user.lastName,
-            publishDate: new Date()
+            publishDate: "N/A"
         };
         const response = await api.createTop5List(payload);
         if (response.data.success) {
@@ -319,6 +319,7 @@ function GlobalStoreContextProvider(props) {
 
     store.getAllLists4 = async function(name){
         const response = await api.getAllTop5Lists();
+        name = name.toUpperCase();
         if (response.data.success) {
             let pairsArray = response.data.data;
             for(let i = 0;i<pairsArray.length;i++)
@@ -328,19 +329,74 @@ function GlobalStoreContextProvider(props) {
                     i-=1;
                 }
             }
-            for(let i = 0;i<pairsArray.length;i++)
-            {
-                if (!pairsArray[i].name.includes(name)) {
+            //let aggregate = []
+            for(let i = 0;i<pairsArray.length;i++){
+                if(!pairsArray[i].name.toUpperCase().includes(name)){
                     pairsArray.splice(i, 1);
                     i-=1;
                 }
             }
-
+            let aggregate = [];
+            for(let i = 0;i<pairsArray.length;i++)
+            {
+                let theN = pairsArray[i].name.toLowerCase()
+                if(!aggregate.includes(theN))
+                {
+                    let things = []
+                    let v = 0;
+                    let d = 0;
+                    let l = 0;
+                    aggregate.push(theN)
+                    for(let j = 0;j<pairsArray.length;j++)
+                    {
+                        let na = pairsArray[j].name.toLowerCase()
+                        if(na == theN)
+                        {
+                            for(let z = 0;z<5;z++){
+                                things.push(pairsArray[j].items[z]);
+                            }
+                            v = v + pairsArray[j].views;
+                            l = l + pairsArray[j].likes;
+                            d = d + pairsArray[j].dislikes;
+                        }
+                    }
+                        let items = [];
+                        things = things.map(function(x){ return x.toLowerCase(); })
+                        let counts = {};
+                        for (const num of things) {
+                            counts[num] = counts[num] ? counts[num] + 1 : 1;
+                        }
+                        for(const va in counts){
+                            items.push(counts[va]+" "+va)
+                        }
+                    items.sort((a,b) =>{
+                        if(a.substring(0,a.indexOf(" "))> b.substring(0,b.indexOf(" ")))
+                            return -1;
+                        if(a.substring(0,a.indexOf(" "))< b.substring(0,b.indexOf(" ")))
+                            return 1;
+                        return 0;
+                    })
+                    console.log(items)
+                    console.log(theN)
+                    let payload = {
+                        name: theN,
+                        items: [items[0], items[1], items[2], items[3], items[4]],
+                        ownerEmail: "community",
+                        views:v,
+                        likes:l,
+                        dislikes:d,
+                        published:true,
+                        likedBy:[],
+                        dislikedBy:[],
+                        ownedBy: "community",
+                        publishDate: "N/A"
+                    };
+                }
+            }
             storeReducer({
                 type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                 payload: pairsArray
             });
-            console.log(this.idNamePairs)
         }
         else {
             console.log("API FAILED TO GET ALL THE LIST PAIRS");
@@ -356,12 +412,15 @@ function GlobalStoreContextProvider(props) {
             for(let i = 0;i<pairsArray.length;i++)
             {
                 let response1 = await api.getTop5ListById(pairsArray[i]._id);
-                thePairs.push(response1.data.top5List);
+                if(response1.data.success){
+                    thePairs.push(response1.data.top5List);
+                }
             }
             storeReducer({
                 type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                 payload: thePairs
             });
+            console.log(this.idNamePairs)
         }
         else {
             console.log("API FAILED TO GET THE LIST PAIRS");

@@ -112,19 +112,14 @@ body {
 }
 
 #top5-ListBox {
-  position: absolute;
-  left: 0%;
-  width: 50%;
-  height: 275px;
+  width: 45%;
+  height: 80%;
   background-color: var(--swatch-accent);
 }
 
 #top5-CommentBox {
-  position: absolute;
-  left: 50%;
-
-  width: 685px;
-  height: 300px;
+  width: 45%;
+  height: 80%;
   background-color: var(--swatch-accent);
 }
 

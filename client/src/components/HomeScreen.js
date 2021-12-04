@@ -24,7 +24,7 @@ import { borders, Box } from '@mui/system';
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
-    const [text, setText] = useState("Your Lists");
+    const [text, setText] = useState(auth.user.email !== "guest@guest.com"?"Your Lists":"All Lists");
     const [menuOpen, setOpen] = useState(false);
 
     useEffect(() => {
@@ -55,6 +55,7 @@ const HomeScreen = () => {
     }
     function funct4(){
         store.viewMode = 4;
+        store.clearHome();
         setText("Community Lists");
         console.log(store)
     }
@@ -72,9 +73,77 @@ const HomeScreen = () => {
     }
 
     function toggleOpen(){
-        console.log("hello ", menuOpen);
         let temp = !menuOpen;
         setOpen(temp);
+    }
+
+    function sortDA(){
+        store.idNamePairs.sort((a,b) =>{
+            let firstY = a.publishDate.substring(0,4);
+            let secondY = b.publishDate.substring(0,4);
+            let firstM = a.publishDate.substring(5,7);
+            let secondM = b.publishDate.substring(5,7);
+            let firstD = a.publishDate.substring(8);
+            let secondD = b.publishDate.substring(8);
+
+            if(firstY > secondY)
+                return 1;
+            else if(firstY < secondY)
+                return -1;
+
+            if(firstM > secondM)
+                return 1;
+            else if(firstM < secondM)
+                return -1;
+
+            if(firstD > secondD)
+                return 1;
+            else if(firstD < secondD)
+                return -1;
+
+            return 0;
+        })
+        toggleOpen();
+    }
+
+    function sortDD(){
+        store.idNamePairs.sort((a,b) =>{
+            let firstY = a.publishDate.substring(0,4);
+            let secondY = b.publishDate.substring(0,4);
+            let firstM = a.publishDate.substring(5,7);
+            let secondM = b.publishDate.substring(5,7);
+            let firstD = a.publishDate.substring(8);
+            let secondD = b.publishDate.substring(8);
+
+            if(firstY < secondY)
+                return 1;
+            else if(firstY > secondY)
+                return -1;
+
+            if(firstM < secondM)
+                return 1;
+            else if(firstM > secondM)
+                return -1;
+
+            if(firstD < secondD)
+                return 1;
+            else if(firstD > secondD)
+                return -1;
+
+            return 0;
+        })
+        toggleOpen();
+    }
+
+    function sortV(){
+        store.idNamePairs.sort((a,b) =>{
+            if(a.views>b.views)
+                return -1;
+            if(a.views<b.views)
+                return 1;
+            return 0;
+        })
+        toggleOpen();
     }
 
     function sortL(){
@@ -90,20 +159,21 @@ const HomeScreen = () => {
 
     function sortD(){
         store.idNamePairs.sort((a,b) =>{
-            if(a.likes>b.likes)
+            if(a.dislikes>b.dislikes)
                 return -1;
-            if(a.likes<b.likes)
+            if(a.dislikes<b.dislikes)
                 return 1;
             return 0;
         })
         toggleOpen();
     }
+
     
     let sortMenu = 
         <Box style = {{right:"0%",top:"14.5%", position:"absolute",backgroundColor:"white"}} border = {1} borderColor = "black" zIndex = "999">   
-                <Button>Publish Date(Newest)</Button>
-                <br/><Button>Publish Date(Oldest)</Button>
-                <br/><Button fullWidth>Views</Button>
+                    <Button onClick = {sortDD}>Publish Date(Newest)</Button>
+                <br/><Button onClick = {sortDA}>Publish Date(Oldest)</Button>
+                <br/><Button fullWidth onClick = {sortV}>Views</Button>
                 <br/><Button fullWidth onClick = {sortL}>Likes</Button>
                 <br/><Button fullWidth onClick = {sortD}>Dislikes</Button>
         </Box>        
@@ -126,27 +196,29 @@ const HomeScreen = () => {
     }
     return (
         <div id="top5-list-selector">
-            <Button onClick = {funct1}><HomeIcon/></Button>
-            <Button onClick = {funct2}><GroupIcon/></Button>
-            <Button onClick = {funct3}><PersonIcon/></Button>
-            <Button onClick = {funct4}><FunctionsIcon/></Button>
-            <TextField label = "Search" style = {{width : "40%"}} onKeyDown = {searchPress}></TextField>
-                <Button style = {{right:"0%", position:"absolute"}} onClick = {toggleOpen} >
-                    Sort By
-                    <MenuIcon
-                        size="large"
-                        color="inherit"
-                    >
-                    </MenuIcon>
-                </Button>
-                {menuOpen?sortMenu:<Box></Box>}
+            <Box>
+                {auth.user.email !== "guest@guest.com"?<Button onClick = {funct1}><HomeIcon/></Button>:<Button></Button>}
+                <Button onClick = {funct2}><GroupIcon/></Button>
+                <Button onClick = {funct3}><PersonIcon/></Button>
+                <Button onClick = {funct4}><FunctionsIcon/></Button>
+                <TextField label = "Search" style = {{width : "40%"}} onKeyDown = {searchPress}></TextField>
+                    <Button style = {{right:"0%", position:"absolute"}} onClick = {toggleOpen} >
+                        Sort By
+                        <MenuIcon
+                            size="large"
+                            color="inherit"
+                        >
+                        </MenuIcon>
+                    </Button>
+                    {menuOpen?sortMenu:<Box></Box>}
+             </Box>
             <div id="list-selector-list">
                 {
                     listCard
                 }
             </div>
             <div id="list-selector-heading">
-            <Fab 
+            {auth.user.email !== "guest@guest.com"?<Fab 
                 color="primary" 
                 aria-label="add"
                 id="add-list-button"
@@ -155,6 +227,8 @@ const HomeScreen = () => {
             >
                 <AddIcon />
             </Fab>
+            :<div></div>
+            }
                 <Typography variant="h2" marginTop = "17%" zIndex = "999">{text}</Typography>
             </div>
             <DeleteModal/>

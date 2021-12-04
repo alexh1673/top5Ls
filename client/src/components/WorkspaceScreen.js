@@ -40,6 +40,17 @@ function WorkspaceScreen() {
                     return false;
                 }
             }
+            for(let i = 0;i<store.idNamePairs.length;i++)
+            {
+                if(store.idNamePairs[i]._id !== store.currentList._id)
+                {
+                    if(store.idNamePairs[i].name == store.currentList.name)
+                    {
+                        return false;
+                    }
+                }
+            }
+            
         return true;
     }
 
@@ -54,8 +65,8 @@ function WorkspaceScreen() {
             }
         }
         list.published = true;
-        let today = new Date();
-        let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+        var today = new window.Date();
+        var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
         console.log(date)
         list.publishDate = date;
         store.updateListPairs(store.currentList._id);

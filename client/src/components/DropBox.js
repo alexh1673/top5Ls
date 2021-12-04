@@ -6,6 +6,7 @@ import { GlobalStoreContext } from '../store/index.js'
 import { Box } from '@mui/system';
 import ListBox from './ListBox.js';
 import CommentBox from './CommentBox.js';
+import AuthContext from '../auth';
 
 function DropBox(props) {
 
@@ -13,9 +14,19 @@ function DropBox(props) {
         marginTop: "30px",
         width: "100%",
         height:"300px",
+        backgroundColor: "gray",
+        borderRadius: 20
     };
 
-    return(<Box style = {style}>
+    const style2 = {
+        marginTop: "30px",
+        width: "100%",
+        height:"300px",
+        backgroundColor: "beige",
+        borderRadius: 20
+    };
+
+    return(< Box style = {props.idNamePair.published?style:style2} justifyContent = "space-around" flexDirection = "row" sx = {{display:"flex"}}>
         <ListBox
             idNamePair = {props.idNamePair}
         />

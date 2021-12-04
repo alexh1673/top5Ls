@@ -8,6 +8,8 @@ import Stack from '@mui/material/Stack';
 import { GlobalStoreContext } from '../store'
 
 export default function SplashScreen() {
+    const { store } = useContext(GlobalStoreContext);
+    const {auth} = useContext(AuthContext);
 
     const style1 = {
         position: 'absolute',
@@ -36,6 +38,11 @@ export default function SplashScreen() {
         p: 4,
       };
 
+
+    function LogGuest(){
+        auth.guestUser(store);
+    }
+
     return (
         <div id="splash-screen">
             The Top 5<br />
@@ -48,12 +55,12 @@ export default function SplashScreen() {
 
             <Box style = {style2}>
                 <Link to='/register/'>
-                    <Button style={{backgroundColor:"white", width:"100%"}}> Create New Account</Button>
+                    <Button style={{backgroundColor:"white", width:"100%"}}>Create New Account</Button>
                 </Link>
             </Box>
 
             <Box style = {style3}>
-                <Button style={{backgroundColor:"white", width:"100%"}}>Continue as guest</Button>
+                <Button style={{backgroundColor:"white", width:"100%"}} onClick = {LogGuest}>Continue as guest</Button>
             </Box>
             <div style = {{fontSize : '12px'}} >
                 Developed by Alex Huang

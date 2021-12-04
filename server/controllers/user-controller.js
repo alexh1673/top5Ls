@@ -37,7 +37,6 @@ loginUser = async (req, res) => {
                 .status(400)
                 .json({ errorMessage: "Invalid username or password" });
         }
-        console.log(truth)
         const token = auth.signToken(user1);
         if(truth){
             await res.cookie("token", token, {
@@ -121,8 +120,70 @@ registerUser = async (req, res) => {
     }
 }
 
+guestUser = async (req, res) => {
+    try{
+        let user = await User.findOne({ email: "guest@guest.com" });
+        if(user == null)
+        {
+            const saltRounds = 10;
+            const salt = await bcrypt.genSalt(saltRounds);
+            const passwordHash = await bcrypt.hash("12341234", salt);
+
+            const newUser = new User({
+                firstName:"Anonymous", lastName:"guest", email:"guest@guest.com", passwordHash: passwordHash
+            });
+
+            const savedUser = await newUser.save();
+
+            // LOGIN THE USER
+            const token = auth.signToken(savedUser);
+
+            await res.cookie("token", token, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: "none"
+            }).status(200).json({
+                    success: true,
+                    user: {
+                        firstName: savedUser.firstName,
+                        lastName: savedUser.lastName,
+                        email: savedUser.email
+                    }
+            }).send();
+        }
+        else{
+            // LOGIN THE USER
+            const token = auth.signToken(user);
+
+            await res.cookie("token", token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: "none"
+            }).status(200).json({
+                success: true,
+                user: {
+                    firstName: savedUser.firstName,
+                    lastName: savedUser.lastName,
+                    email: savedUser.email
+                }
+            }).send();
+        }
+    }
+    catch (e)
+    {
+        console.error(err);
+        res.status(500).send();
+    }
+}
+
+
+
+
+
+
 module.exports = {
     getLoggedIn,
     registerUser,
-    loginUser
+    loginUser,
+    guestUser
 }

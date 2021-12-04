@@ -41,6 +41,7 @@ function ListCard(props) {
     }
 
     async function open(event){
+        console.log(auth.user.email)
         event.stopPropagation();
         if(!dropped){
             idNamePair.views +=1;
@@ -52,13 +53,11 @@ function ListCard(props) {
 
     function like(event)
     {
-        console.log(idNamePair)
         event.stopPropagation();
         if(!liked)
         {
             idNamePair.likes +=1;
             idNamePair.likedBy.push(auth.user.email);
-            store.updateListPairs(idNamePair._id);
         }
         else
         {
@@ -67,9 +66,18 @@ function ListCard(props) {
                 if (index > -1) {
                 idNamePair.likedBy.splice(index, 1);
                 }
-            store.updateListPairs(idNamePair._id);
+        }
+        if(disliked)
+        {
+            idNamePair.dislikes -=1;
+            const index = idNamePair.dislikedBy.indexOf(auth.user.email);
+                if (index > -1) {
+                idNamePair.dislikedBy.splice(index, 1);
+                }
+            setDislike(!disliked)
         }
         setLike(!liked);
+        store.updateListPairs(idNamePair._id);
     }
 
     function dislike(event)
@@ -79,7 +87,6 @@ function ListCard(props) {
         {
             idNamePair.dislikes +=1;
             idNamePair.dislikedBy.push(auth.user.email);
-            store.updateListPairs(idNamePair._id);
         }
         else
         {
@@ -88,8 +95,18 @@ function ListCard(props) {
                 if (index > -1) {
                 idNamePair.dislikedBy.splice(index, 1);
                 }
-            store.updateListPairs(idNamePair._id);
         }
+
+        if(liked)
+        {
+            idNamePair.likes -=1;
+            const index = idNamePair.likedBy.indexOf(auth.user.email);
+                if (index > -1) {
+                idNamePair.likedBy.splice(index, 1);
+                }
+            setLike(!liked)
+        }
+        store.updateListPairs(idNamePair._id);
         setDislike(!disliked);
     }
 
@@ -118,41 +135,50 @@ function ListCard(props) {
             id={idNamePair._id}
             key={idNamePair._id}
             sx={{ marginTop: '15px', display: 'flex', p: 1 }}
-            style={{
+            style={idNamePair.published?{
                 fontSize: '48pt',
-                width: '100%'
+                width: '100%',
+                backgroundColor: 'grey',
+                borderRadius: 20
+            }:{
+                fontSize: '48pt',
+                width: '100%',
+                backgroundColor: 'beige',
+                borderRadius: 20
             }}
         >
                 <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}
                     <Box fontSize = "15px">By: {idNamePair.ownedBy}</Box>
                 </Box>
-                <Box fontSize = "15px">views {idNamePair.views}</Box>
-                {(idNamePair.published)?likeComponent:<Box></Box>}
-                {(idNamePair.published)?dislikeComponent:<Box></Box>}
-                {!idNamePair.published?<Button   onClick={(event) => {handleLoadList(event, idNamePair._id)}} fontSize = "15px" >
+                <Box fontSize = "15px">views: {idNamePair.views}</Box>
+                {idNamePair.published?likeComponent:<Box></Box>}
+                {idNamePair.published?dislikeComponent:<Box></Box>}
+                {!idNamePair.published && (idNamePair.ownerEmail == auth.user.email)?<Button   onClick={(event) => {handleLoadList(event, idNamePair._id)}} fontSize = "15px" >
                         edit
-                </Button>:<Box fontSize = "15px" >published on : {}</Box>}
-                <Box sx={{ p: 1 }}>
+                </Button>
+                :<Box fontSize = "15px">Published on : {idNamePair.publishDate}</Box>}
+                {idNamePair.ownerEmail == auth.user.email && !idNamePair.published?<Box sx={{ p: 1 }}>
                     <IconButton onClick={(event) => {
                         handleDeleteList(event, idNamePair._id)
                     }} aria-label='delete'>
                         <DeleteIcon style={{fontSize:'48pt'}} />
                     </IconButton>
-                </Box>
+                </Box>:<Box></Box>}
+
                 <Box>
                     {dropped?<Button onClick = {(event) => open(event)}><ArrowDropUpIcon/></Button>:<Button onClick = {(event) => open(event)}><ArrowDropDownIcon/></Button>}
                 </Box>
         </ListItem>
         
     return (
-        <div>
+        <Box>
             {cardElement}
             <Box>
                 {dropped?<DropBox
                     idNamePair = {idNamePair}
                 />:<div></div>}
             </Box>
-        </div>
+        </Box>
     );
 }
 

@@ -120,6 +120,49 @@ function AuthContextProvider(props) {
 
     }
 
+    auth.guestUser = async function (store){
+        try{
+            const response = await api.guestUser();      
+            if (response.status === 200) {
+                authReducer({
+                    type: AuthActionType.LOGIN_USER,
+                    payload: {
+                        user: response.data.user
+                    }
+                })
+                const response1 = await api.getAllTop5Lists();
+                if (response.data.success) {
+                    let pairsArray = response1.data.data;
+                    for(let i = 0;i<pairsArray.length;i++)
+                    {
+                        if (pairsArray[i].dislikedBy.includes("guest@guest.com")) {
+                            let index = pairsArray[i].dislikedBy.indexOf("guest@guest.com");
+                            pairsArray[i].dislikedBy.splice(index, 1);
+                            api.updateTop5ListById(pairsArray[i]._id,pairsArray[i]);
+                        }
+                        if (pairsArray[i].likedBy.includes("guest@guest.com")) {
+                            let index = pairsArray[i].likedBy.indexOf("guest@guest.com");
+                            pairsArray[i].likedBy.splice(index, 1);
+                            api.updateTop5ListById(pairsArray[i]._id,pairsArray[i]);
+                        }
+                    }
+                }
+                history.push("/");
+                store.loadIdNamePairs();
+            }
+        }
+        catch(e)
+        {
+            let err = e.response.data.errorMessage;
+            authReducer({
+                type: AuthActionType.ERROR,
+                payload: {
+                    errorMessage : err
+                }
+            }) 
+        }
+    }
+
     auth.eraseError = function(){
         authReducer({
             type: AuthActionType.ERROR,
@@ -139,7 +182,7 @@ function AuthContextProvider(props) {
                         user: response.data.user
                     }
                 })
-                history.push("/");
+                history.push('/login/');
                 store.loadIdNamePairs();
             }
         }
