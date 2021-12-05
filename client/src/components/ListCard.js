@@ -144,14 +144,14 @@ function ListCard(props) {
                 <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}
                     <Box fontSize = "15px">By: {idNamePair.ownerEmail}</Box>
                 </Box>
-                <Box fontSize = "15px">views: {idNamePair.views}</Box>
-                {idNamePair.published?likeComponent:<Box></Box>}
-                {idNamePair.published?dislikeComponent:<Box></Box>}
+                <Box fontSize = "15px" width = "100px">views: {idNamePair.views} </Box>
+                {idNamePair.published && auth.user.email !== "guest@guest.com" ?likeComponent:<Box></Box>}
+                {idNamePair.published && auth.user.email !== "guest@guest.com"?dislikeComponent:<Box></Box>}
                 {!idNamePair.published && (idNamePair.ownerEmail == auth.user.email)?<Button   onClick={(event) => {handleLoadList(event, idNamePair._id)}} fontSize = "15px" >
                         edit
                 </Button>
                 :<Box fontSize = "15px">Published on : {idNamePair.publishDate}</Box>}
-                {idNamePair.ownerEmail == auth.user.email && !idNamePair.published?<Box sx={{ p: 1 }}>
+                {idNamePair.ownerEmail == auth.user.email?<Box sx={{ p: 1 }}>
                     <IconButton onClick={(event) => {
                         handleDeleteList(event, idNamePair._id)
                     }} aria-label='delete'>

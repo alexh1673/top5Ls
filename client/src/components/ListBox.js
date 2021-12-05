@@ -21,7 +21,7 @@ function ListBox(props) {
                             width: '100%',
                             height: '55px'
                         }}>
-                           <Box fontSize = '12pt' height = "1px" textAlign = "right">{store.viewMode == 4?props.idNamePair.votes[c++]:""} votes</Box>
+                           <Box fontSize = '12pt' height = "1px" textAlign = "right">{store.viewMode == 4?props.idNamePair.votes[c++]:""} {store.viewMode == 4?" votes":""}</Box>
                            {counter++} . {item}
                         </Box>
                     ))

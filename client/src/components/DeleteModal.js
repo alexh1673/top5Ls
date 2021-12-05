@@ -31,7 +31,12 @@ export default function DeleteModal() {
 
   function deleteList()
   {
-    store.deleteMarkedList();
+    if(!store.listMarkedForDeletion.published){   
+      store.deleteMarkedList();
+    }
+    else{
+      store.updateCommD(store.listMarkedForDeletion);
+    }
     open = false;
   }
 

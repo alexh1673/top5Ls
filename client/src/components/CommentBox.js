@@ -18,31 +18,36 @@ function CommentBox(props) {
         if (event.code === "Enter") {
             let text = event.target.value;
             let comment = [];
-            comment.push(auth.user.firstName+" "+auth.user.lastName)
+            comment.push(auth.user.email)
             comment.push(text)
             props.idNamePair.comments.push(comment)
             store.updateListPairs(props.idNamePair._id)
             event.target.blur()
         }
     }
+    let pub = props.idNamePair.published
 
     if(props.idNamePair){
         editItems = 
-            <List sx={{ width: '99%',height : "225px", bgcolor: 'white', overflowY:"auto"}}>
+            <List sx={{ width: '100%',height : "225px", bgcolor: `${ !pub ? "beige" : "gray"}`, overflowY:"auto"}}>
                 {
                     props.idNamePair.comments.map((item) => (
-                        <Box style = {{fontSize: '12pt',
+                        <Box sx = {{fontSize: '12pt',
                         width: '100%',
                         height: '45px',
                         back: 'black',
-                        fontWeight:"bold"}}>
+                        fontWeight:"bold",
+                        backgroundColor: "green",
+                        borderRadius: 3,
+                        border: "solid black",
+                        mb : 1
+                        }} >
                             {item[0]}
                             <Box style={{
                                 fontSize: '10pt',
                                 width: '100%',
                                 height: '35px',
                                 back: 'black',
-                                bgcolor: 'yellow',
                                 fontWeight:"normal"
                             }}>
                                 {item[1]}
@@ -53,14 +58,21 @@ function CommentBox(props) {
             </List>;
     }
 
+    if(props.idNamePair.published){
+        return(
+            <div id="top5-CommentBox">
+                {editItems}
+                {auth.user.email !== "guest@guest.com"?<input placeholder = "Add Comment" 
+                style = {{width : "100%",height: "52px"}} 
+                type = "text"
+                onKeyDown = {addComment}
+                />:<div></div>}
+            </div>
+        )
+    }
     return(
         <div id="top5-CommentBox">
-            {editItems}
-            <input placeholder = "Add Comment" 
-            style = {{width : "100%",height: "52px"}} 
-            type = "text"
-            onKeyDown = {addComment}
-            />
+                The List has not yet been published
         </div>
     )
 }

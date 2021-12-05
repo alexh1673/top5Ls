@@ -162,9 +162,9 @@ guestUser = async (req, res) => {
             }).status(200).json({
                 success: true,
                 user: {
-                    firstName: savedUser.firstName,
-                    lastName: savedUser.lastName,
-                    email: savedUser.email
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email
                 }
             }).send();
         }

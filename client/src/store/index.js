@@ -263,8 +263,49 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
-    store.getAllLists2 = async function(){
+    store.getAllLists1 = async function(partition){
         const response = await api.getAllTop5Lists();
+        let partitio;
+        if(partition){
+            partitio = partition.toLowerCase();
+        }
+        if (response.data.success) {
+            let pairsArray = response.data.data;
+            for(let i = 0;i<pairsArray.length;i++)
+            {
+                if (!(pairsArray[i].ownerEmail == auth.user.email)) {
+                    pairsArray.splice(i, 1);
+                    i-=1;
+                }
+            }
+            if(partitio){
+                for(let i = 0;i<pairsArray.length;i++)
+                {
+                    if (!pairsArray[i].name.toLowerCase().includes(partitio)) {
+                        pairsArray.splice(i, 1);
+                        i-=1;
+                    }
+                }
+            }
+
+            storeReducer({
+                type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                payload: pairsArray
+            });
+            console.log(this.idNamePairs)
+        }
+        else {
+            console.log("API FAILED TO GET ALL THE LIST PAIRS");
+        }
+    }
+
+
+    store.getAllLists2 = async function(partition){
+        const response = await api.getAllTop5Lists();
+        let partitio;
+        if(partition){
+            partitio = partition.toLowerCase();
+        }
         if (response.data.success) {
             let pairsArray = response.data.data;
             for(let i = 0;i<pairsArray.length;i++)
@@ -272,6 +313,15 @@ function GlobalStoreContextProvider(props) {
                 if (!pairsArray[i].published || pairsArray[i].ownedBy == "Community") {
                     pairsArray.splice(i, 1);
                     i-=1;
+                }
+            }
+            if(partitio){
+                for(let i = 0;i<pairsArray.length;i++)
+                {
+                    if (!pairsArray[i].name.toLowerCase().includes(partitio)) {
+                        pairsArray.splice(i, 1);
+                        i-=1;
+                    }
                 }
             }
 
@@ -299,7 +349,7 @@ function GlobalStoreContextProvider(props) {
             }
             for(let i = 0;i<pairsArray.length;i++)
             {
-                if (pairsArray[i].ownedBy != user) {
+                if (pairsArray[i].ownerEmail != user) {
                     pairsArray.splice(i, 1);
                     i-=1;
                 }
@@ -334,7 +384,19 @@ function GlobalStoreContextProvider(props) {
                     i-=1;
                 }
             }
-            
+            let partitio;
+            if(name){
+                partitio = name.toLowerCase();
+            }
+            if(partitio){
+                for(let i = 0;i<pairsArray.length;i++)
+                {
+                    if (!pairsArray[i].name.toLowerCase().includes(partitio)) {
+                        pairsArray.splice(i, 1);
+                        i-=1;
+                    }
+                }
+            }
             storeReducer({
                 type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                 payload: pairsArray
@@ -510,6 +572,16 @@ function GlobalStoreContextProvider(props) {
            })
            store.makeComm(name);
         }
+    }
+
+    store.updateCommD = async function (list) {
+        let name = list.name;
+        let response = await api.deleteTop5ListById(list._id);
+        if (response.data.success) {
+            store.loadIdNamePairs();
+            history.push("/");
+        }
+        store.makeComm(name);
     }
 
     store.makeComm = async function(name){

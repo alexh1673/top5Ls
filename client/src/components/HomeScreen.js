@@ -62,6 +62,14 @@ const HomeScreen = () => {
 
     function searchPress(event){
         if(event.code == "Enter"){
+            if(store.viewMode == "1"){
+                setText("Your Lists")
+                store.getAllLists1(event.target.value);
+            }
+            if(store.viewMode == "2"){
+                setText(event.target.value+" Lists")
+                store.getAllLists2(event.target.value);
+            }
             if(store.viewMode == "3"){
                 setText(event.target.value+"'s Lists")
                 store.getAllLists3(event.target.value);
@@ -197,7 +205,7 @@ const HomeScreen = () => {
     return (
         <div id="top5-list-selector">
             <Box>
-                {auth.user.email !== "guest@guest.com"?<Button onClick = {funct1}><HomeIcon/></Button>:<Button></Button>}
+                {auth.user.email !== "guest@guest.com"?<Button onClick = {funct1}><HomeIcon/></Button>:<div></div>}
                 <Button onClick = {funct2}><GroupIcon/></Button>
                 <Button onClick = {funct3}><PersonIcon/></Button>
                 <Button onClick = {funct4}><FunctionsIcon/></Button>
