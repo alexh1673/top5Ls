@@ -244,7 +244,8 @@ function GlobalStoreContextProvider(props) {
             likedBy:[],
             dislikedBy:[],
             ownedBy: auth.user.firstName+" " +auth.user.lastName,
-            publishDate: "N/A"
+            publishDate: "N/A",
+            votes:[]
         };
         const response = await api.createTop5List(payload);
         if (response.data.success) {
@@ -549,6 +550,7 @@ function GlobalStoreContextProvider(props) {
            storeReducer({
                 type:GlobalStoreActionType.UPDATE_COMMENTS
            })
+           await api.updateCommunityLists(store.currentList.name);
         }
     }
 

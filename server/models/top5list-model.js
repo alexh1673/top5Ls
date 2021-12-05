@@ -14,7 +14,8 @@ const Top5ListSchema = new Schema(
         likedBy: {type: [String],required:true},
         dislikedBy: {type: [String],required:true},
         ownedBy: { type: String, required: true },
-        publishDate: { type: String, required: true }
+        publishDate: { type: String, required: true },
+        votes: {type: [Number],required: true}
     },
     { timestamps: true },
 )

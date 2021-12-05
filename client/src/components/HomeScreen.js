@@ -181,7 +181,7 @@ const HomeScreen = () => {
     let listCard = "";
     if (store.idNamePairs) {
         listCard = 
-            <List sx={{ marginTop:"5%", width: '90%', left: '5%', bgcolor: 'background.paper' }}>
+            <List sx={{ marginTop:"5%", width: '90%', left: '5%' }}>
             {
                 store.idNamePairs.map((pair) => (
                     <ListCard
