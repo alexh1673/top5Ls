@@ -146,7 +146,9 @@ function ListCard(props) {
                 </Box>
                 <Box fontSize = "15px" width = "100px">views: {idNamePair.views} </Box>
                 {idNamePair.published && auth.user.email !== "guest@guest.com" ?likeComponent:<Box></Box>}
+                {auth.user.email == "guest@guest.com" ?<Box fontSize = "12px" width = "75px"> Likes: {idNamePair.likedBy.length}</Box>:<Box></Box>}
                 {idNamePair.published && auth.user.email !== "guest@guest.com"?dislikeComponent:<Box></Box>}
+                {auth.user.email == "guest@guest.com" ?<Box fontSize = "12px" width = "75px"> Dislikes: {idNamePair.dislikedBy.length}</Box>:<Box></Box>}
                 {!idNamePair.published && (idNamePair.ownerEmail == auth.user.email)?<Button   onClick={(event) => {handleLoadList(event, idNamePair._id)}} fontSize = "15px" >
                         edit
                 </Button>

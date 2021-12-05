@@ -66,6 +66,10 @@ export default function SplashScreen() {
                 Developed by Alex Huang
             </div>
 
+            <Box fontSize = "23px" style = {{position:"absolute", top:"55%",left:"35%"}}>
+                Share your top 5 Lists with the rest of the world!
+            </Box>
+
         </div>
     )
 }

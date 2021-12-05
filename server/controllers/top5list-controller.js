@@ -155,9 +155,13 @@ updateCommunityLists = async (req, res) =>{
             return;
         }
         let views = 0
-        let likedBy = 0
-        let dislikedBy = 0
+        let likedBy = []
+        let dislikedBy = []
         let comments = []
+        var today = new Date();
+        var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+        console.log(date)
+        let publishDate = date
 
         for(let i = 0;i<top5Lists.length;i++){
             if(top5Lists[i].ownedBy == "Community"){
@@ -166,6 +170,7 @@ updateCommunityLists = async (req, res) =>{
                 likedBy = top5Lists[i].likedBy;
                 dislikedBy = top5Lists[i].dislikedBy;
                 comments = top5Lists[i].comments;
+                publishDate = top5Lists[i].publishDate
                 Top5List.findOneAndDelete({ _id: top5Lists[i]._id }, (err, top5list) => {
                 }).catch(err => console.log(err))
                 top5Lists.splice(i,1)
@@ -202,7 +207,7 @@ updateCommunityLists = async (req, res) =>{
       
             const top5List = new Top5List({name: req.params.id, items: top5ans, ownedBy: "Community",comments:comments,
              views: views,published:true, ownerEmail:"Community",
-            likedBy:likedBy, dislikedBy:dislikedBy, publishDate: "N/A", published: true, votes: votes}); 
+            likedBy:likedBy, dislikedBy:dislikedBy, publishDate: publishDate, published: true, votes: votes}); 
             top5List.save(); 
        
     }).catch(err => console.log(err));
