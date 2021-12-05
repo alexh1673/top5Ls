@@ -70,7 +70,7 @@ function WorkspaceScreen() {
         var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
         console.log(date)
         list.publishDate = date;
-        store.updateListPairs(store.currentList._id);
+        store.updateComm(store.currentList._id);
         store.closeCurrentList();
     }
 

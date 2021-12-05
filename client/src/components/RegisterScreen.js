@@ -79,7 +79,7 @@ export default function RegisterScreen() {
                                     required
                                     fullWidth
                                     id="email"
-                                    label="Email Address"
+                                    label="Username"
                                     name="email"
                                     autoComplete="email"
                                 />

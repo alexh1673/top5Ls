@@ -148,9 +148,9 @@ const HomeScreen = () => {
 
     function sortL(){
         store.idNamePairs.sort((a,b) =>{
-            if(a.likes>b.likes)
+            if(a.likedBy.length>b.likedBy.length)
                 return -1;
-            if(a.likes<b.likes)
+            if(a.likedBy.length<b.likedBy.length)
                 return 1;
             return 0;
         })
@@ -159,9 +159,9 @@ const HomeScreen = () => {
 
     function sortD(){
         store.idNamePairs.sort((a,b) =>{
-            if(a.dislikes>b.dislikes)
+            if(a.dislikedBy.length>b.dislikedBy.length)
                 return -1;
-            if(a.dislikes<b.dislikes)
+            if(a.dislikedBy.length<b.dislikedBy.length)
                 return 1;
             return 0;
         })

@@ -9,6 +9,7 @@ import { Box } from '@mui/system';
 function ListBox(props) {
     const {store} = useContext(GlobalStoreContext);
     let counter = 1;
+    let c = 0;
     let editItems = "";
     if(props.idNamePair){
         editItems = 
@@ -20,6 +21,7 @@ function ListBox(props) {
                             width: '100%',
                             height: '55px'
                         }}>
+                           <Box fontSize = '12pt' height = "1px" textAlign = "right">{store.viewMode == 4?props.idNamePair.votes[c++]:""} votes</Box>
                            {counter++} . {item}
                         </Box>
                     ))

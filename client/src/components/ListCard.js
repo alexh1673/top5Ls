@@ -41,7 +41,7 @@ function ListCard(props) {
     }
 
     async function open(event){
-        console.log(auth.user.email)
+        console.log(idNamePair)
         event.stopPropagation();
         if(!dropped){
             idNamePair.views +=1;
@@ -56,12 +56,10 @@ function ListCard(props) {
         event.stopPropagation();
         if(!liked)
         {
-            idNamePair.likes +=1;
             idNamePair.likedBy.push(auth.user.email);
         }
         else
         {
-            idNamePair.likes -=1;
             const index = idNamePair.likedBy.indexOf(auth.user.email);
                 if (index > -1) {
                 idNamePair.likedBy.splice(index, 1);
@@ -69,7 +67,6 @@ function ListCard(props) {
         }
         if(disliked)
         {
-            idNamePair.dislikes -=1;
             const index = idNamePair.dislikedBy.indexOf(auth.user.email);
                 if (index > -1) {
                 idNamePair.dislikedBy.splice(index, 1);
@@ -85,12 +82,10 @@ function ListCard(props) {
         event.stopPropagation();
         if(!disliked)
         {
-            idNamePair.dislikes +=1;
             idNamePair.dislikedBy.push(auth.user.email);
         }
         else
         {
-            idNamePair.dislikes -=1;
             const index = idNamePair.dislikedBy.indexOf(auth.user.email);
                 if (index > -1) {
                 idNamePair.dislikedBy.splice(index, 1);
@@ -99,7 +94,6 @@ function ListCard(props) {
 
         if(liked)
         {
-            idNamePair.likes -=1;
             const index = idNamePair.likedBy.indexOf(auth.user.email);
                 if (index > -1) {
                 idNamePair.likedBy.splice(index, 1);
@@ -116,7 +110,7 @@ function ListCard(props) {
                 <Button onClick = {like} style  = {liked?{opacity:1}:{opacity:0.3}}>
                         <ThumbUpIcon/>
                 </Button>
-                    <Box fontSize = "12px" textAlign = "center">{idNamePair.likes}</Box>
+                    <Box fontSize = "12px" textAlign = "center">{idNamePair.likedBy.length}</Box>
                 </Box>
             </Box>
 
@@ -126,7 +120,7 @@ function ListCard(props) {
                     <Button onClick = {dislike} style  = {disliked?{opacity:1}:{opacity:0.3}}>
                         <ThumbDownIcon/>
                     </Button>
-                    <Box fontSize = "12px" textAlign = "center">{idNamePair.dislikes}</Box>
+                    <Box fontSize = "12px" textAlign = "center">{idNamePair.dislikedBy.length}</Box>
                 </Box>
             </Box>
 
@@ -148,7 +142,7 @@ function ListCard(props) {
             }}
         >
                 <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}
-                    <Box fontSize = "15px">By: {idNamePair.ownedBy}</Box>
+                    <Box fontSize = "15px">By: {idNamePair.ownerEmail}</Box>
                 </Box>
                 <Box fontSize = "15px">views: {idNamePair.views}</Box>
                 {idNamePair.published?likeComponent:<Box></Box>}
@@ -171,7 +165,9 @@ function ListCard(props) {
         </ListItem>
         
     return (
-        <Box>
+        <Box style = {idNamePair.published?{backgroundColor: "gray",
+        borderRadius: 20}:{backgroundColor: "beige",
+        borderRadius: 20}}>
             {cardElement}
             <Box>
                 {dropped?<DropBox

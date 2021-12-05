@@ -56,8 +56,6 @@ updateTop5List = async (req, res) => {
         top5List.name = body.name
         top5List.items = body.items
         top5List.comments = body.comments
-        top5List.likes = body.likes
-        top5List.dislikes = body.dislikes
         top5List.published = body.published
         top5List.likedBy = body.likedBy
         top5List.dislikedBy = body.dislikedBy
@@ -149,86 +147,64 @@ getTop5ListPairs = async (req, res) => {
 }
 
 updateCommunityLists = async (req, res) =>{
-    console.log(" Not supercalifragilisticexpialidocious");
-    console.log(req.params.id);
     await Top5List.find({name: req.params.id, published: true}, (err, top5Lists) => {
-
-        console.log(top5Lists[0]+" supercalifragilisticexpialidocious");
         if (err) {
             return res.status(404).json({ success: false, error: err });
         }
-        
         if (!top5Lists){
             return;
         }
+        let views = 0
+        let likedBy = 0
+        let dislikedBy = 0
+        let comments = []
 
-        if(top5Lists.length === 1 && top5Lists[0].ownerEmail === "Community"){
-            Top5List.findOneAndDelete({ _id: top5Lists[0]._id }, (err, top5list) => {
-                return;
-            }).catch(err => console.log(err))
-            return; 
-        }
-        let itemVotePairs = {}; 
-        let communityList = null;
-        for (let key in top5Lists) {
-            let list = top5Lists[key];
-            if(list.userName === "Community"){
-                communityList = list
-                continue; 
-            }
-            list.items.forEach((item, index) => {
-                if(!itemVotePairs[item]){
-                    itemVotePairs[item] = 5-index;
-                }
-                else{
-                    itemVotePairs[item] += 5-index;
-                }
-            });
-        }
-        let pairs = Object.entries(itemVotePairs);
-        let items = []
-        let votes = [] 
-        items.push(pairs[0][0])
-        votes.push(pairs[0][1])
-        pairs.shift(); 
-        for (let key in pairs){
-            pair = pairs[key]
-            if(pair[1] < votes[votes.length-1]){
-                votes.push(pair[1]);
-                items.push(pair[0]);
-            }
-            else{
-                for (let i = 0; i < votes.length; i++){
-                    if(pair[1] >= votes[i]){
-                        if(i === 0){
-                            votes.unshift(pair[1]);
-                            items.unshift(pair[0]);
-                            break;
-                        }
-                        else{
-                            votes.splice(i, 0, pair[1]); 
-                            items.splice(i, 0, pair[0]);
-                            break; 
-                        }
-                    }
-                }
-            }
-            if(votes.length > 5){
-                votes.pop();
-                items.pop();
+        for(let i = 0;i<top5Lists.length;i++){
+            if(top5Lists[i].ownedBy == "Community"){
+                console.log(top5Lists[i])
+                views = top5Lists[i].views;
+                likedBy = top5Lists[i].likedBy;
+                dislikedBy = top5Lists[i].dislikedBy;
+                comments = top5Lists[i].comments;
+                Top5List.findOneAndDelete({ _id: top5Lists[i]._id }, (err, top5list) => {
+                }).catch(err => console.log(err))
+                top5Lists.splice(i,1)
+                i-=1;
             }
         }
-        
-        if(communityList){
-            communityList.items = items;
-            communityList.votes = votes; 
-            communityList.save();  
-        } else {
-            const top5List = new Top5List({name: req.params.id, items: items, ownedBy: "Community",comments:[],
-             views: 0,likes:0,dislikes:0,published:true, ownerEmail:"community@top5lister.com",
-            likedBy:[], dislikedBy:[], publishDate: "N/A", published: true, votes: votes}); 
+
+        console.log(top5Lists)
+        let items = {};
+        for(let i = 0;i<top5Lists.length;i++)
+        {
+            for(let j = 0;j<5;j++){
+                {items[top5Lists[i].items[j]] = items[top5Lists[i].items[j]] ? items[top5Lists[i].items[j]]+(5-j) :(5-j)}
+            }
+        }
+        console.log(items)
+        function getSortedKeys(obj) {
+            var keys = Object.keys(obj);
+            return keys.sort(function(a,b){return obj[b]-obj[a]});
+        }
+        let freq = getSortedKeys(items);
+        let top5ans = []; let votes = [];
+        for(let i = 0;i<5;i++)
+        {
+            top5ans.push(freq[i])
+        }
+        for(let i = 0;i<5;i++)
+        {
+            votes.push(items[top5ans[i]])
+        }
+        console.log(top5ans)
+        console.log(votes)
+        console.log(views)
+      
+            const top5List = new Top5List({name: req.params.id, items: top5ans, ownedBy: "Community",comments:comments,
+             views: views,published:true, ownerEmail:"Community",
+            likedBy:likedBy, dislikedBy:dislikedBy, publishDate: "N/A", published: true, votes: votes}); 
             top5List.save(); 
-        }
+       
     }).catch(err => console.log(err));
 }
 
